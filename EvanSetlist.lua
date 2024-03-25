@@ -37,12 +37,12 @@ function getOs()
     return package.config:sub(1,1) == "\\" and "win" or "unix"
 end
   
-local directory = function()
+function getDirectory()
   if (getOs() == "win") then
-    return os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
-  else
     return os.getenv( "USERPROFILE" ) .. '/Documents/ReaSetlister/'
-  end 
+  else
+    return os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
+  end   
 end
       
 local loadedSetName = ''
@@ -666,13 +666,13 @@ function loadRegionsFromFileCommand(fileName)
 end
 
 function saveLastLoadedFile()
-  local file = assert(io.open(directory..'lastSetName.txt', "w"))
+  local file = assert(io.open(getDirectory()..'lastSetName.txt', "w"))
   file:write(loadedSetName)
   file:close()
 end
 
 function deleteFile(fileName)
-  local path = directory..fileName.label
+  local path = getDirectory()..fileName.label
   local func = function() assert(os.remove(path)) end
   confirmationPopup('Are you sure you want to delete the setlist: '..fileName.label..' ?', func)
 end
@@ -686,7 +686,7 @@ function loadSongPopup()
     
   local fileList = {}
     
-  local f = io.popen('ls ' .. directory)
+  local f = io.popen('ls ' .. getDirectory())
   for name in f:lines() do
     if (name:sub(-#'.csv') == '.csv') then
       fileList[#fileList+1]= name

@@ -557,8 +557,8 @@ end
 function saveSetlist(setListNameEntry)
   if (regions ~= nil and regions ~= empty and 
       setListNameEntry.value ~= nil and setListNameEntry.value ~= '') then
-      os.execute( 'mkdir -p ' .. directory .. ' 2>/dev/null')
-      local file = io.open(directory..setListNameEntry.value..'.csv', "r")
+      os.execute( 'mkdir -p ' .. getDirectory() .. ' 2>/dev/null')
+      local file = io.open(getDirectory() ..setListNameEntry.value..'.csv', "r")
       if (file ~= nil) then
         file:close()
         local func = function() nt2_write(directory..setListNameEntry.value..'.csv', regions) end

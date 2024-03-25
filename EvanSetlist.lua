@@ -39,7 +39,7 @@ end
   
 function getDirectory()
   if (getOs() == "win") then
-    return os.getenv( "USERPROFILE" ) .. '/Documents/ReaSetlister/'
+    return os.getenv( "USERPROFILE" ) .. '\\Documents\\ReaSetlister\\'
   else
     return os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
   end   
@@ -559,7 +559,7 @@ function saveSetlist(setListNameEntry)
       setListNameEntry.value ~= nil and setListNameEntry.value ~= '') then
       
       if (getOs() == "win") then
-         os.execute( 'mkdir -p ' .. getDirectory())
+         reaper.RecursiveCreateDirectory(getDirectory(), 0)
       else
         os.execute( 'mkdir -p ' .. getDirectory() .. ' 2>/dev/null')
       end   
@@ -691,13 +691,23 @@ function loadSongPopup()
   local text = box:add(rtk.Text{'Choose a setlist to load!', wrap=rtk.Text.WRAP_NORMAL})
     
   local fileList = {}
-    
-  local f = io.popen('ls ' .. getDirectory())
-  for name in f:lines() do
-    if (name:sub(-#'.csv') == '.csv') then
-      fileList[#fileList+1]= name
-    end
-  end
+  
+  if (getOs() == "win") then
+      for i = 0, math.huge do
+		  local file = reaper.EnumerateFiles(getDirectory(), i)
+		  if not file then break end
+		  fileList[#fileList + 1] = file
+	  end
+  else
+	  local f = io.popen('ls ' .. getDirectory())
+	  for name in f:lines() do
+		if (name:sub(-#'.csv') == '.csv') then
+		  fileList[#fileList+1]= name
+		end
+	  end
+  end   
+   
+  
   
   local fileListDropDown = box:add(rtk.OptionMenu{
       menu=fileList

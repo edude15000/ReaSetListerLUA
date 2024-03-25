@@ -112,7 +112,7 @@ function helpPopUp()
     overlay='#000000cc', autoclose=true}
     
   box:add(rtk.Text{'HELP', wrap=rtk.Text.WRAP_NORMAL})
-  box:add(rtk.Text{'PATH - Saved setlists are stored in ' .. directory, wrap=rtk.Text.WRAP_NORMAL})
+  box:add(rtk.Text{'PATH - Saved setlists are stored in ' .. getDirectory(), wrap=rtk.Text.WRAP_NORMAL})
   box:add(rtk.Text{'INDEX - (Region index) Type a number in the index column on a row and press enter to change that row to the input given.', wrap=rtk.Text.WRAP_NORMAL})
   box:add(rtk.Text{'PLAYED - Will show X if song has already played this session, P if song is currently playing, or O if not yet played this session.', wrap=rtk.Text.WRAP_NORMAL})
   box:add(rtk.Text{'NAME - (Region name) Will grey out if song has already played this session.', wrap=rtk.Text.WRAP_NORMAL})
@@ -561,12 +561,12 @@ function saveSetlist(setListNameEntry)
       local file = io.open(getDirectory() ..setListNameEntry.value..'.csv', "r")
       if (file ~= nil) then
         file:close()
-        local func = function() nt2_write(directory..setListNameEntry.value..'.csv', regions) end
+        local func = function() nt2_write(getDirectory()..setListNameEntry.value..'.csv', regions) end
         confirmationPopup("A file with the name "
           ..setListNameEntry.value..".csv' already exists, do you want to replace it?",
           func)
       else
-        nt2_write(directory..setListNameEntry.value..'.csv', regions)
+        nt2_write(getDirectory()..setListNameEntry.value..'.csv', regions)
       end
   else
     errorPopup('Please type a setlist name and have at least one song in the set!')
@@ -642,7 +642,7 @@ function loadRegionsFromFile(fileName)
 end
 
 function loadRegionsFromFileCommand(fileName)
-  local path = directory..fileName
+  local path = getDirectory()..fileName
   for k in pairs (regions) do regions[k] = nil end
   
   local file = io.open(path, "r") 

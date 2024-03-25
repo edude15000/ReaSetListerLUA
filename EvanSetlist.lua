@@ -45,7 +45,6 @@ local directory = function()
   end 
 end
       
-local directory = os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
 local loadedSetName = ''
       
 local markers, regions = {}, {}

@@ -5,7 +5,7 @@
 -- editing region index in daw doubles region
 -- movesong visual bugs
 -- making changes after saving reverts set name visually bug
-
+-- windows issue with space in path?
 
 
 package.path = reaper.GetResourcePath() .. '/Scripts/rtk/1/?.lua'
@@ -557,7 +557,13 @@ end
 function saveSetlist(setListNameEntry)
   if (regions ~= nil and regions ~= empty and 
       setListNameEntry.value ~= nil and setListNameEntry.value ~= '') then
-      os.execute( 'mkdir -p ' .. getDirectory() .. ' 2>/dev/null')
+      
+      if (getOs() == "win") then
+         os.execute( 'mkdir -p ' .. getDirectory())
+      else
+        os.execute( 'mkdir -p ' .. getDirectory() .. ' 2>/dev/null')
+      end   
+      
       local file = io.open(getDirectory() ..setListNameEntry.value..'.csv', "r")
       if (file ~= nil) then
         file:close()

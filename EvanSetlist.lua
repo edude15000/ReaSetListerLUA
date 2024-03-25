@@ -2,7 +2,6 @@
 -- auto refresh
 -- editable song name
 -- test with markers
--- compile to script
 -- editing region index in daw doubles region
 -- movesong visual bugs
 -- making changes after saving reverts set name visually bug
@@ -32,6 +31,19 @@ local topContainer = rtk.VBox{bg='grey'}
 fullContainer:add(topContainer)
 local vp = fullContainer:add(rtk.Viewport{container, smoothscroll=true, scrollbar_size=5, 
   vscrollbar=rtk.Viewport.SCROLLBAR_HOVER})
+  
+  
+function getOs()
+    return package.config:sub(1,1) == "\\" and "win" or "unix"
+end
+  
+local directory = function()
+  if (getOs() == "win") then
+    return os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
+  else
+    return os.getenv( "USERPROFILE" ) .. '/Documents/ReaSetlister/'
+  end 
+end
       
 local directory = os.getenv( "HOME" ) .. '/Documents/ReaSetlister/'
 local loadedSetName = ''

@@ -5,13 +5,13 @@
 -- editing region index in daw doubles region
 -- movesong visual bugs
 -- making changes after saving reverts set name visually bug
--- windows issue with space in path?
 
 
 package.path = reaper.GetResourcePath() .. '/Scripts/rtk/1/?.lua'
 local rtk = require('rtk')
 
 local window = rtk.Window{}
+
 window.onkeypresspost = function(self, event)
   if (not event.handled and event.keycode == rtk.keycodes.SPACE) then
      reaper.OnPauseButtonEx(0)
@@ -51,8 +51,14 @@ local markers, regions = {}, {}
 local currentRegion = {}
 local dragging, initialIndex = nil
 
+window.onclose = function()
+  currentRegion = nil
+end
+
 function runloop()
-  if (currentRegion ~= nil and reaper.GetPlayPosition() >= currentRegion.End) then
+  if (currentRegion == nil) then 
+    reaper.ShowConsoleMsg('defer end')
+  elseif (currentRegion ~= nil and reaper.GetPlayPosition() >= currentRegion.End and reaper.GetPlayPosition() <= currentRegion.End + 10) then
      if (currentRegion.StopAfter == 'true') then
        reaper.OnStopButton()
      else
@@ -694,17 +700,17 @@ function loadSongPopup()
   
   if (getOs() == "win") then
       for i = 0, math.huge do
-		  local file = reaper.EnumerateFiles(getDirectory(), i)
-		  if not file then break end
-		  fileList[#fileList + 1] = file
-	  end
+      local file = reaper.EnumerateFiles(getDirectory(), i)
+      if not file then break end
+      fileList[#fileList + 1] = file
+    end
   else
-	  local f = io.popen('ls ' .. getDirectory())
-	  for name in f:lines() do
-		if (name:sub(-#'.csv') == '.csv') then
-		  fileList[#fileList+1]= name
-		end
-	  end
+    local f = io.popen('ls ' .. getDirectory())
+    for name in f:lines() do
+    if (name:sub(-#'.csv') == '.csv') then
+      fileList[#fileList+1]= name
+    end
+    end
   end   
    
   
@@ -743,7 +749,7 @@ function loadSongPopup()
   local cancelButton = box:add(rtk.Button{'Cancel'}, {halign='right'})
   cancelButton.onclick = function(b, event)
     popup:close()
-  end
+  end 
   popup:open()
 end
 
@@ -751,8 +757,6 @@ function main()
   loadRegionsFromProject()
   buildUI()
 end
-
-
 
 
 main()
